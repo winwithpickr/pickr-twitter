@@ -1,0 +1,31 @@
+{
+  "name": "@winwithpickr/twitter",
+  "version": "0.3.0",
+  "description": "X/Twitter SDK for winwithpickr — command parsing, verification, and pool building",
+  "license": "MIT",
+  "author": "bmcreations",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/winwithpickr/pickr-twitter"
+  },
+  "homepage": "https://winwithpickr.com",
+  "keywords": [
+    "giveaway",
+    "twitter",
+    "x",
+    "pickr",
+    "winwithpickr",
+    "verification"
+  ],
+  "type": "module",
+  "main": "lib/pickr-parser.js",
+  "files": [
+    "lib/"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
