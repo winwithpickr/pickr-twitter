@@ -54,8 +54,8 @@ class CommandParserTest {
     }
 
     @Test
-    fun parseWatchCommand() {
-        val cmd = CommandParser.parse("@winwithpickr watch", "winwithpickr")
+    fun parseStartCommand() {
+        val cmd = CommandParser.parse("@winwithpickr start", "winwithpickr")
         assertNotNull(cmd)
         assertEquals(TriggerMode.WATCH, cmd.triggerMode)
     }

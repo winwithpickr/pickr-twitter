@@ -6,7 +6,7 @@ import com.winwithpickr.twitter.models.ParsedCommand
 
 object CommandParser {
 
-    private val winnersRegex        = Regex("""(?:pick|watch)\s+(\d+)""", RegexOption.IGNORE_CASE)
+    private val winnersRegex        = Regex("""(?:pick|start)\s+(\d+)""", RegexOption.IGNORE_CASE)
     private val fromRegex           = Regex("""from\s+([\w+]+)""", RegexOption.IGNORE_CASE)
     private val followAccountsRegex = Regex("""follow(?:ing|er|ers)?\s+((?:@\w+\s*,?\s*)+)""", RegexOption.IGNORE_CASE)
     private val scheduledRegex      = Regex("""in\s+(\d+)(h|d)""", RegexOption.IGNORE_CASE)
@@ -26,10 +26,10 @@ object CommandParser {
     fun parse(text: String, botHandle: String): ParsedCommand? {
         val lower = text.lowercase().replace("@${botHandle.lowercase()}", "")
         val hasPick  = lower.contains("pick")
-        val hasWatch = lower.contains("watch")
-        if (!hasPick && !hasWatch) return null
+        val hasStart = lower.contains("start")
+        if (!hasPick && !hasStart) return null
 
-        val triggerMode = if (hasWatch) TriggerMode.WATCH else TriggerMode.IMMEDIATE
+        val triggerMode = if (hasStart) TriggerMode.WATCH else TriggerMode.IMMEDIATE
         val winners = winnersRegex.find(lower)?.groupValues?.get(1)?.toIntOrNull() ?: 1
 
         val fromClause = fromRegex.find(lower)?.groupValues?.get(1) ?: "replies"

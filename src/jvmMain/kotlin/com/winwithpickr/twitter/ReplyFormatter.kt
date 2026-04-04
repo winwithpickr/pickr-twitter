@@ -34,16 +34,16 @@ object ReplyFormatter {
         }
     }
 
-    fun watchConfirmReply(handle: String) =
+    fun startConfirmReply(handle: String) =
         "Got it @$handle! Watching this giveaway \uD83D\uDC40\n\n" +
         "Reply to your tweet (or quote-RT) with \"picking a winner\" " +
         "when ready \u2014 I'll draw automatically."
 
-    fun alreadyWatchingReply(handle: String) =
+    fun alreadyStartedReply(handle: String) =
         "Hey @$handle \u2014 already watching this giveaway! " +
         "Reply with \"picking a winner\" when you're ready."
 
-    fun watchExpiredReply(handle: String) =
+    fun giveawayExpiredReply(handle: String) =
         "Hey @$handle \u2014 this giveaway's 7-day window closed (X API limit). " +
         "I can no longer fetch replies.\n\nFor future giveaways tag me within 7 days."
 
@@ -98,7 +98,7 @@ object ReplyFormatter {
     fun scheduledPicksGateReply(handle: String, tweetId: String, xId: String, secret: String, baseUrl: String) =
         "Hey @$handle \u2014 scheduled picks require Business.\n\n" +
         "Upgrade: ${upgradeUrl(xId, tweetId, "business", secret, baseUrl)}\n\n" +
-        "Tip: use \"@winwithpickr watch\" to pick when you're ready instead."
+        "Tip: use \"@winwithpickr start\" to pick when you're ready instead."
 
     fun tweetTooOldReply(handle: String, ageDays: Int) =
         "Hey @$handle \u2014 replies only available within 7 days of the original tweet " +
