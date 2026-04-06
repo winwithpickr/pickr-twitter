@@ -1,5 +1,6 @@
 package com.winwithpickr.twitter
 
+import com.winwithpickr.core.models.SelectionMode
 import com.winwithpickr.core.models.TriggerMode
 import com.winwithpickr.twitter.models.EntryConditions
 import com.winwithpickr.twitter.models.ParsedCommand
@@ -23,13 +24,18 @@ object CommandParser {
         "closing giveaway", "winner time", "time to pick",
     )
 
+    val ANSWER_PHRASES = listOf("the answer is", "answer:", "answer is")
+
     fun parse(text: String, botHandle: String): ParsedCommand? {
         val lower = text.lowercase().replace("@${botHandle.lowercase()}", "")
         val hasPick  = lower.contains("pick")
         val hasStart = lower.contains("start")
-        if (!hasPick && !hasStart) return null
+        val hasPredict = lower.contains("predict")
+        if (!hasPick && !hasStart && !hasPredict) return null
 
-        val triggerMode = if (hasStart) TriggerMode.WATCH else TriggerMode.IMMEDIATE
+        val selectionMode = if (hasPredict) SelectionMode.PREDICT else SelectionMode.RANDOM
+        // Prediction mode always uses watch (needs time for entries + host answer)
+        val triggerMode = if (hasPredict || hasStart) TriggerMode.WATCH else TriggerMode.IMMEDIATE
         val winners = winnersRegex.find(lower)?.groupValues?.get(1)?.toIntOrNull() ?: 1
 
         val fromClause = fromRegex.find(lower)?.groupValues?.get(1) ?: "replies"
@@ -82,9 +88,24 @@ object CommandParser {
             ),
             triggerMode = if (scheduledDelayMs != null) TriggerMode.SCHEDULED else triggerMode,
             scheduledDelayMs = scheduledDelayMs,
+            selectionMode = selectionMode,
         )
     }
 
     fun isTriggerText(text: String): Boolean =
         TRIGGER_PHRASES.any { text.lowercase().contains(it) }
+
+    fun extractAnswer(text: String): String? {
+        val lower = text.lowercase()
+        for (phrase in ANSWER_PHRASES) {
+            val idx = lower.indexOf(phrase)
+            if (idx >= 0) {
+                // Take first line only, trim trailing punctuation noise
+                val raw = text.substring(idx + phrase.length).trim()
+                val answer = raw.lineSequence().first().trim()
+                if (answer.isNotEmpty()) return answer
+            }
+        }
+        return null
+    }
 }

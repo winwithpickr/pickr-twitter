@@ -34,6 +34,69 @@ object ReplyFormatter {
         }
     }
 
+    fun predictConfirmReply(handle: String) =
+        "\uD83D\uDD2E Got it @$handle! Watching for predictions.\n\n" +
+        "When you're ready, reply with the answer (e.g. \"the answer is UConn 82 Michigan 75\") " +
+        "and I'll score every prediction and pick a winner.\n\n" +
+        "Follow @winwithpickr so you don't miss the DM setup \u2709\uFE0F"
+
+    fun formatPredictWinner(
+        winners: List<XUser>,
+        poolSize: Int,
+        topScoreCount: Int,
+        answer: String,
+        maxScore: Int,
+        seed: String,
+        tierConfig: TierConfig,
+        giveawayId: String,
+        appBaseUrl: String,
+    ): String {
+        val truncAnswer = if (answer.length > 60) answer.take(57) + "..." else answer
+        val link = "\uD83D\uDD17 $appBaseUrl/r/$giveawayId"
+        val watermark = if (tierConfig.watermark) "\nPowered by @winwithpickr" else ""
+        val label = if (maxScore == 100) "perfect prediction" else "top prediction"
+
+        return buildString {
+            appendLine("\uD83D\uDD2E Pickr Predict result")
+            appendLine()
+            appendLine("Answer: $truncAnswer")
+            appendLine("$topScoreCount $label${if (topScoreCount != 1) "s" else ""} out of ${poolSize.fmt()} entries")
+            appendLine()
+            if (winners.size == 1) {
+                appendLine("\uD83C\uDFC6 Winner: @${winners[0].username} (score: $maxScore/100)")
+                if (topScoreCount > 1) {
+                    appendLine("Tied with ${topScoreCount - 1} other${if (topScoreCount > 2) "s" else ""} \u2014 broken by verifiable random seed")
+                }
+            } else {
+                appendLine("\uD83C\uDFC6 Winners (${winners.size}):")
+                // List up to 3 winners inline, rest on verification page
+                val shown = winners.take(3)
+                shown.forEachIndexed { i, w -> appendLine("${i + 1}. @${w.username} (score: $maxScore/100)") }
+                if (winners.size > 3) {
+                    appendLine("+ ${winners.size - 3} more \u2014 see full list below")
+                }
+                if (topScoreCount > winners.size) {
+                    appendLine("Selected from $topScoreCount tied entries via verifiable random seed")
+                }
+            }
+            appendLine()
+            append(link)
+            append(watermark)
+        }.let { reply ->
+            // Hard cap: truncate middle section if still over 280
+            if (reply.length <= 280) reply else {
+                buildString {
+                    appendLine("\uD83D\uDD2E Pickr Predict result")
+                    appendLine()
+                    appendLine("\uD83C\uDFC6 Winner: @${winners[0].username} (score: $maxScore/100)")
+                    appendLine()
+                    append(link)
+                    append(watermark)
+                }
+            }
+        }
+    }
+
     fun startConfirmReply(handle: String) =
         "Got it @$handle! Watching this giveaway \uD83D\uDC40\n\n" +
         "Reply to your tweet (or quote-RT) with \"picking a winner\" " +
