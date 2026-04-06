@@ -37,7 +37,8 @@ object ReplyFormatter {
     fun startConfirmReply(handle: String) =
         "Got it @$handle! Watching this giveaway \uD83D\uDC40\n\n" +
         "Reply to your tweet (or quote-RT) with \"picking a winner\" " +
-        "when ready \u2014 I'll draw automatically."
+        "when ready \u2014 I'll draw automatically.\n\n" +
+        "Follow @winwithpickr so you don't miss the DM setup \u2709\uFE0F"
 
     fun alreadyStartedReply(handle: String) =
         "Hey @$handle \u2014 already watching this giveaway! " +
