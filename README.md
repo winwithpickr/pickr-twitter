@@ -88,6 +88,18 @@ The npm package exports `verifyPick()` and `parseCommand()` for browser use (ver
 
 ## Commands
 
+The bot understands both structured commands and natural language. On X, mentions go through the LLM parser first ([pickr-anthropic](https://github.com/winwithpickr/pickr-anthropic)) and fall back to the regex `CommandParser` in this library. The regex parser is also compiled to JavaScript for the live command tester on the website.
+
+### Natural language (via LLM)
+
+| Example | What it extracts |
+|---|---|
+| `@winwithpickr start a giveaway, pick 3 winners from people who replied and retweeted, must be following me` | 3 winners, reply + retweet, follower check, watch mode |
+| `@winwithpickr pick a winner from the retweets, followers only` | 1 winner from retweeters, follower check |
+| `@winwithpickr choose 5 winners in 24 hours from replies` | 5 winners, scheduled 24h, from replies |
+
+### Structured commands (regex)
+
 Reply to any giveaway tweet with:
 
 | Command | What it does |
