@@ -27,13 +27,7 @@ pickr-twitter handles everything specific to X/Twitter:
 
 ```kotlin
 repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/winwithpickr/*")
-        credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }
+    mavenCentral()
 }
 
 dependencies {
