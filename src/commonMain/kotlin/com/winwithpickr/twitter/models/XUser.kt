@@ -13,6 +13,8 @@ data class XUser(
     @SerialName("profile_image_url") val profileImageUrl: String? = null,
     val description: String? = null,
     @kotlinx.serialization.Transient val replyText: String? = null,
+    /** ISO-8601 instant when the reply was posted. Drives early-pick bonus. */
+    @kotlinx.serialization.Transient val replySubmittedAt: String? = null,
 ) : Candidate {
     /** Alias for backward compatibility with existing code expecting .username */
     val username: String get() = displayName

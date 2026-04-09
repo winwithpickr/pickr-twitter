@@ -50,11 +50,14 @@ object ReplyFormatter {
         tierConfig: TierConfig,
         giveawayId: String,
         appBaseUrl: String,
+        /** Optional early-pick bonus applied to the top winner's score; renders inline only when > 0. */
+        winnerBonus: Double? = null,
     ): String {
         val truncAnswer = if (answer.length > 60) answer.take(57) + "..." else answer
         val link = "\uD83D\uDD17 $appBaseUrl/r/$giveawayId"
         val watermark = if (tierConfig.watermark) "\nPowered by @winwithpickr" else ""
         val label = if (maxScore == 100) "perfect prediction" else "top prediction"
+        val bonusNote = winnerBonus?.takeIf { it > 0.0 }?.let { " +${"%.1f".format(it)} early" } ?: ""
 
         return buildString {
             appendLine("\uD83D\uDD2E Pickr Predict result")
@@ -63,7 +66,7 @@ object ReplyFormatter {
             appendLine("$topScoreCount $label${if (topScoreCount != 1) "s" else ""} out of ${poolSize.fmt()} entries")
             appendLine()
             if (winners.size == 1) {
-                appendLine("\uD83C\uDFC6 Winner: @${winners[0].username} (score: $maxScore/100)")
+                appendLine("\uD83C\uDFC6 Winner: @${winners[0].username} (score: $maxScore/100$bonusNote)")
                 if (topScoreCount > 1) {
                     appendLine("Tied with ${topScoreCount - 1} other${if (topScoreCount > 2) "s" else ""} \u2014 broken by verifiable random seed")
                 }
@@ -88,7 +91,7 @@ object ReplyFormatter {
                 buildString {
                     appendLine("\uD83D\uDD2E Pickr Predict result")
                     appendLine()
-                    appendLine("\uD83C\uDFC6 Winner: @${winners[0].username} (score: $maxScore/100)")
+                    appendLine("\uD83C\uDFC6 Winner: @${winners[0].username} (score: $maxScore/100$bonusNote)")
                     appendLine()
                     append(link)
                     append(watermark)
