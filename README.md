@@ -21,28 +21,6 @@ pickr-twitter handles everything specific to X/Twitter:
 - **OAuth 1.0a signing** — HMAC-SHA1 request signing for X API v2
 - **JS exports** — `verifyPick()` and `parseCommand()` for browser verification pages
 
-## Install
-
-### Gradle (JVM / Kotlin Multiplatform)
-
-```kotlin
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation("com.winwithpickr:twitter:0.3.0")
-}
-```
-
-### npm
-
-```bash
-npm install @winwithpickr/twitter
-```
-
-The npm package exports `verifyPick()` and `parseCommand()` for browser use (verification pages, command preview).
-
 ## Modules
 
 | Module | Target | Description |
@@ -105,21 +83,6 @@ Reply to any giveaway tweet with:
 | `@winwithpickr pick follow:@acct1,@acct2` | Must follow specified accounts (Pro+) |
 | `@winwithpickr watch` | Watch giveaway, pick when host triggers |
 | `@winwithpickr pick in 2h` | Scheduled pick (Business) |
-
-## JavaScript API
-
-```javascript
-import { verifyPick, parseCommand } from "@winwithpickr/twitter";
-
-// Verify a pick result
-const result = verifyPick(seed, poolIds, winnerCount);
-// result.winners  — computed winner IDs
-// result.poolHash — computed SHA-256 pool hash
-
-// Parse a command
-const cmd = parseCommand("@winwithpickr pick 3 from replies+retweets");
-// cmd.valid, cmd.winners, cmd.mode, cmd.reply, cmd.retweet, ...
-```
 
 ## Building
 
