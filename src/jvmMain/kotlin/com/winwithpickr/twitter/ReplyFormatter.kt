@@ -153,7 +153,7 @@ object ReplyFormatter {
     }
 
     fun followAccountsGateReply(handle: String, tweetId: String, xId: String, secret: String, baseUrl: String) =
-        "Hey @$handle \u2014 \"must follow\" account checks are a paid add-on (+$0.50/pick).\n\n" +
+        "Hey @$handle \u2014 \"must follow\" account checks are a paid add-on (+$0.50/pick per account).\n\n" +
         "Upgrade to Pro to unlock: ${upgradeUrl(xId, tweetId, "pro", secret, baseUrl)}\n\n" +
         "To pick without it: \"@winwithpickr pick from replies\""
 
