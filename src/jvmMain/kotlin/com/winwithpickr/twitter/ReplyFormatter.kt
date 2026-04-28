@@ -34,6 +34,65 @@ object ReplyFormatter {
         }
     }
 
+    fun challengeConfirmReply(handle: String) =
+        "\uD83E\uDDE9 Challenge is live @$handle!\n\n" +
+        "Reply with your answer. When you reveal the correct one " +
+        "(e.g. \"the answer is hodl\"), I'll draw a winner from all correct entries.\n\n" +
+        "Follow @winwithpickr so you don't miss the DM setup \u2709\uFE0F"
+
+    fun formatChallengeWinner(
+        winners: List<XUser>,
+        poolSize: Int,
+        correctCount: Int,
+        answer: String,
+        seed: String,
+        tierConfig: TierConfig,
+        giveawayId: String,
+        appBaseUrl: String,
+    ): String {
+        val truncAnswer = if (answer.length > 60) answer.take(57) + "..." else answer
+        val link = "\uD83D\uDD17 $appBaseUrl/r/$giveawayId"
+        val watermark = if (tierConfig.watermark) "\nPowered by @winwithpickr" else ""
+
+        return buildString {
+            appendLine("\uD83E\uDDE9 Pickr Challenge result")
+            appendLine()
+            appendLine("Answer: $truncAnswer")
+            appendLine("$correctCount correct out of ${poolSize.fmt()} entries")
+            appendLine()
+            if (winners.size == 1) {
+                appendLine("\uD83C\uDFC6 Winner: @${winners[0].username}")
+                if (correctCount > 1) {
+                    appendLine("Selected from $correctCount correct entries via verifiable random seed")
+                }
+            } else {
+                appendLine("\uD83C\uDFC6 Winners (${winners.size}):")
+                val shown = winners.take(3)
+                shown.forEachIndexed { i, w -> appendLine("${i + 1}. @${w.username}") }
+                if (winners.size > 3) {
+                    appendLine("+ ${winners.size - 3} more \u2014 see full list below")
+                }
+                if (correctCount > winners.size) {
+                    appendLine("Selected from $correctCount correct entries via verifiable random seed")
+                }
+            }
+            appendLine()
+            append(link)
+            append(watermark)
+        }.let { reply ->
+            if (reply.length <= 280) reply else {
+                buildString {
+                    appendLine("\uD83E\uDDE9 Pickr Challenge result")
+                    appendLine()
+                    appendLine("\uD83C\uDFC6 Winner: @${winners[0].username}")
+                    appendLine()
+                    append(link)
+                    append(watermark)
+                }
+            }
+        }
+    }
+
     fun predictConfirmReply(handle: String) =
         "\uD83D\uDD2E Got it @$handle! Watching for predictions.\n\n" +
         "When you're ready, reply with the answer (e.g. \"the answer is UConn 82 Michigan 75\") " +

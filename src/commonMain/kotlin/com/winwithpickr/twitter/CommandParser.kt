@@ -31,11 +31,16 @@ object CommandParser {
         val hasPick  = lower.contains("pick")
         val hasStart = lower.contains("start")
         val hasPredict = lower.contains("predict")
-        if (!hasPick && !hasStart && !hasPredict) return null
+        val hasChallenge = lower.contains("challenge")
+        if (!hasPick && !hasStart && !hasPredict && !hasChallenge) return null
 
-        val selectionMode = if (hasPredict) SelectionMode.PREDICT else SelectionMode.RANDOM
-        // Prediction mode always uses watch (needs time for entries + host answer)
-        val triggerMode = if (hasPredict || hasStart) TriggerMode.WATCH else TriggerMode.IMMEDIATE
+        val selectionMode = when {
+            hasChallenge -> SelectionMode.CHALLENGE
+            hasPredict -> SelectionMode.PREDICT
+            else -> SelectionMode.RANDOM
+        }
+        // Prediction and challenge modes always use watch (needs time for entries + host answer)
+        val triggerMode = if (hasPredict || hasChallenge || hasStart) TriggerMode.WATCH else TriggerMode.IMMEDIATE
         val winners = winnersRegex.find(lower)?.groupValues?.get(1)?.toIntOrNull() ?: 1
 
         val fromClause = fromRegex.find(lower)?.groupValues?.get(1) ?: "replies"
